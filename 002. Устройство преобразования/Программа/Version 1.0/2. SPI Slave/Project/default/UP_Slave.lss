@@ -1,0 +1,218 @@
+
+UP_Slave.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000b0  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .bss          00000004  00800060  00800060  00000124  2**0
+                  ALLOC
+  2 .debug_aranges 00000020  00000000  00000000  00000124  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  3 .debug_pubnames 0000009a  00000000  00000000  00000144  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_info   00000149  00000000  00000000  000001de  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_abbrev 0000009d  00000000  00000000  00000327  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_line   0000015a  00000000  00000000  000003c4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_frame  00000040  00000000  00000000  00000520  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_str    0000012b  00000000  00000000  00000560  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	14 c0       	rjmp	.+40     	; 0x2a <__ctors_end>
+   2:	23 c0       	rjmp	.+70     	; 0x4a <__bad_interrupt>
+   4:	22 c0       	rjmp	.+68     	; 0x4a <__bad_interrupt>
+   6:	21 c0       	rjmp	.+66     	; 0x4a <__bad_interrupt>
+   8:	20 c0       	rjmp	.+64     	; 0x4a <__bad_interrupt>
+   a:	1f c0       	rjmp	.+62     	; 0x4a <__bad_interrupt>
+   c:	1e c0       	rjmp	.+60     	; 0x4a <__bad_interrupt>
+   e:	1d c0       	rjmp	.+58     	; 0x4a <__bad_interrupt>
+  10:	1c c0       	rjmp	.+56     	; 0x4a <__bad_interrupt>
+  12:	1b c0       	rjmp	.+54     	; 0x4a <__bad_interrupt>
+  14:	1a c0       	rjmp	.+52     	; 0x4a <__bad_interrupt>
+  16:	19 c0       	rjmp	.+50     	; 0x4a <__bad_interrupt>
+  18:	18 c0       	rjmp	.+48     	; 0x4a <__bad_interrupt>
+  1a:	17 c0       	rjmp	.+46     	; 0x4a <__bad_interrupt>
+  1c:	16 c0       	rjmp	.+44     	; 0x4a <__bad_interrupt>
+  1e:	15 c0       	rjmp	.+42     	; 0x4a <__bad_interrupt>
+  20:	14 c0       	rjmp	.+40     	; 0x4a <__bad_interrupt>
+  22:	13 c0       	rjmp	.+38     	; 0x4a <__bad_interrupt>
+  24:	12 c0       	rjmp	.+36     	; 0x4a <__bad_interrupt>
+  26:	11 c0       	rjmp	.+34     	; 0x4a <__bad_interrupt>
+  28:	10 c0       	rjmp	.+32     	; 0x4a <__bad_interrupt>
+
+0000002a <__ctors_end>:
+  2a:	11 24       	eor	r1, r1
+  2c:	1f be       	out	0x3f, r1	; 63
+  2e:	cf e5       	ldi	r28, 0x5F	; 95
+  30:	d2 e0       	ldi	r29, 0x02	; 2
+  32:	de bf       	out	0x3e, r29	; 62
+  34:	cd bf       	out	0x3d, r28	; 61
+
+00000036 <__do_clear_bss>:
+  36:	10 e0       	ldi	r17, 0x00	; 0
+  38:	a0 e6       	ldi	r26, 0x60	; 96
+  3a:	b0 e0       	ldi	r27, 0x00	; 0
+  3c:	01 c0       	rjmp	.+2      	; 0x40 <.do_clear_bss_start>
+
+0000003e <.do_clear_bss_loop>:
+  3e:	1d 92       	st	X+, r1
+
+00000040 <.do_clear_bss_start>:
+  40:	a4 36       	cpi	r26, 0x64	; 100
+  42:	b1 07       	cpc	r27, r17
+  44:	e1 f7       	brne	.-8      	; 0x3e <.do_clear_bss_loop>
+  46:	02 d0       	rcall	.+4      	; 0x4c <main>
+  48:	31 c0       	rjmp	.+98     	; 0xac <_exit>
+
+0000004a <__bad_interrupt>:
+  4a:	da cf       	rjmp	.-76     	; 0x0 <__vectors>
+
+0000004c <main>:
+/*======================================================================================================================================*/
+/*                                                       Главная функция программы.                                                     */
+/*======================================================================================================================================*/
+int main( void )
+{
+  DDRA  = 0xff;
+  4c:	9f ef       	ldi	r25, 0xFF	; 255
+  4e:	9a bb       	out	0x1a, r25	; 26
+  PORTA = 0x0;
+  50:	1b ba       	out	0x1b, r1	; 27
+
+  DDRB  = 0x4f;
+  52:	8f e4       	ldi	r24, 0x4F	; 79
+  54:	87 bb       	out	0x17, r24	; 23
+  PORTB = (1<<SCK)|(1<<MOSI)|(1<<MISO);
+  56:	80 ee       	ldi	r24, 0xE0	; 224
+  58:	88 bb       	out	0x18, r24	; 24
+
+  DDRC  = 0xff;
+  5a:	94 bb       	out	0x14, r25	; 20
+  PORTC = 0x0;
+  5c:	15 ba       	out	0x15, r1	; 21
+
+  DDRD  = 0x7f;
+  5e:	8f e7       	ldi	r24, 0x7F	; 127
+  60:	81 bb       	out	0x11, r24	; 17
+  PORTD = 0x0;
+  62:	12 ba       	out	0x12, r1	; 18
+
+  _WDR();
+  64:	a8 95       	wdr
+
+  _SEI();                                   //разрешение прерываний
+  66:	78 94       	sei
+
+// Подпрограмма инициализации SPI в режиме Slave
+void SPI_SlaveInit(void)
+{
+  // Разрешение SPI в режиме ведомого
+  SPCR = (1<<SPE);
+  68:	80 e4       	ldi	r24, 0x40	; 64
+  6a:	8d b9       	out	0x0d, r24	; 13
+
+// Подпрограмма чтения через SPI
+unsigned char SPI_SlaveReceive(void)
+{
+  // Ожидание завершения передачи (пока бит SPIF не установлен)
+  while(!(SPSR & (1<<SPIF)));
+  6c:	77 9b       	sbis	0x0e, 7	; 14
+  6e:	fe cf       	rjmp	.-4      	; 0x6c <main+0x20>
+  // Чтение принятых данных и выход из процедуры
+  return SPDR;
+  70:	2f b1       	in	r18, 0x0f	; 15
+
+// Подпрограмма чтения через SPI
+unsigned char SPI_SlaveReceive(void)
+{
+  // Ожидание завершения передачи (пока бит SPIF не установлен)
+  while(!(SPSR & (1<<SPIF)));
+  72:	77 9b       	sbis	0x0e, 7	; 14
+  74:	fe cf       	rjmp	.-4      	; 0x72 <main+0x26>
+  // Чтение принятых данных и выход из процедуры
+  return SPDR;
+  76:	3f b1       	in	r19, 0x0f	; 15
+
+// Подпрограмма чтения через SPI
+unsigned char SPI_SlaveReceive(void)
+{
+  // Ожидание завершения передачи (пока бит SPIF не установлен)
+  while(!(SPSR & (1<<SPIF)));
+  78:	77 9b       	sbis	0x0e, 7	; 14
+  7a:	fe cf       	rjmp	.-4      	; 0x78 <main+0x2c>
+  // Чтение принятых данных и выход из процедуры
+  return SPDR;
+  7c:	4f b1       	in	r20, 0x0f	; 15
+
+// Подпрограмма чтения через SPI
+unsigned char SPI_SlaveReceive(void)
+{
+  // Ожидание завершения передачи (пока бит SPIF не установлен)
+  while(!(SPSR & (1<<SPIF)));
+  7e:	77 9b       	sbis	0x0e, 7	; 14
+  80:	fe cf       	rjmp	.-4      	; 0x7e <main+0x32>
+  // Чтение принятых данных и выход из процедуры
+  return SPDR;
+  82:	9f b1       	in	r25, 0x0f	; 15
+    byte_from_modbus1 = SPI_SlaveReceive(); //приём данных от ведущего, полученных по шине ModBus 
+    byte_from_modbus2 = SPI_SlaveReceive();
+	byte_from_modbus3 = SPI_SlaveReceive();
+	byte_from_modbus4 = SPI_SlaveReceive();
+
+    PORTA |= byte_from_modbus1;             //4 байта на 27 выходов для передачи по шине ModBus
+  84:	8b b3       	in	r24, 0x1b	; 27
+  86:	28 2b       	or	r18, r24
+  88:	2b bb       	out	0x1b, r18	; 27
+    PORTB |= byte_from_modbus2;
+  8a:	88 b3       	in	r24, 0x18	; 24
+  8c:	38 2b       	or	r19, r24
+  8e:	38 bb       	out	0x18, r19	; 24
+	PORTC |= byte_from_modbus3;
+  90:	85 b3       	in	r24, 0x15	; 21
+  92:	48 2b       	or	r20, r24
+  94:	45 bb       	out	0x15, r20	; 21
+	PORTD |= byte_from_modbus4;
+  96:	82 b3       	in	r24, 0x12	; 18
+  98:	98 2b       	or	r25, r24
+  9a:	92 bb       	out	0x12, r25	; 18
+  9c:	e7 cf       	rjmp	.-50     	; 0x6c <main+0x20>
+
+0000009e <SPI_SlaveInit>:
+
+// Подпрограмма инициализации SPI в режиме Slave
+void SPI_SlaveInit(void)
+{
+  // Разрешение SPI в режиме ведомого
+  SPCR = (1<<SPE);
+  9e:	80 e4       	ldi	r24, 0x40	; 64
+  a0:	8d b9       	out	0x0d, r24	; 13
+}
+  a2:	08 95       	ret
+
+000000a4 <SPI_SlaveReceive>:
+
+// Подпрограмма чтения через SPI
+unsigned char SPI_SlaveReceive(void)
+{
+  // Ожидание завершения передачи (пока бит SPIF не установлен)
+  while(!(SPSR & (1<<SPIF)));
+  a4:	77 9b       	sbis	0x0e, 7	; 14
+  a6:	fe cf       	rjmp	.-4      	; 0xa4 <SPI_SlaveReceive>
+  // Чтение принятых данных и выход из процедуры
+  return SPDR;
+  a8:	8f b1       	in	r24, 0x0f	; 15
+}
+  aa:	08 95       	ret
+
+000000ac <_exit>:
+  ac:	f8 94       	cli
+
+000000ae <__stop_program>:
+  ae:	ff cf       	rjmp	.-2      	; 0xae <__stop_program>
